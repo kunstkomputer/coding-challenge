@@ -4,15 +4,15 @@ import csv
 from decimal import *
 
 
-
 class Article:
-    def __init__(self, article_id, prod_id, name, description, price, amount):
-        self.article_id = article_id
-        self.prod_id = prod_id
-        self.name = name
-        self.description = description
-        self.price = price
-        self.amount = amount
+    def __init__(self, article_id: str, prod_id: str, name: str, description: str, price: str,
+                 amount: str):
+        self.article_id = str(article_id)
+        self.prod_id = str(prod_id)
+        self.name = str(name)
+        self.description = str(description)
+        self.price = Decimal(str(price))
+        self.amount = int(amount)
 
     def __eq__(self, other):
         if not isinstance(self, other.__class__):
@@ -29,7 +29,7 @@ def read_articles_from_csv(csv_file_path):
     article_instances = []
     for row in data[1:]:
         article_instances.append(
-            Article(row[0], row[1], row[2], row[3], Decimal(row[4]), int(row[5])))
+            Article(row[0], row[1], row[2], row[3], row[4], row[5]))
 
     return article_instances
 
