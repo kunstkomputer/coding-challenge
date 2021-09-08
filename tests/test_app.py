@@ -48,7 +48,7 @@ def test_products_with_stock_zero_are_filtered():
     zero_stock_art_two = app.Article("empty", "P-2", "empty", "empty", "38", "0")
     product_list = [zero_stock_art_one, zero_stock_art_two]
 
-    filtered_list = app.remove_products_with_stock_zero(product_list)
+    filtered_list = app.remove_articles_with_stock_zero(product_list)
 
     assert len(filtered_list) == 0
 

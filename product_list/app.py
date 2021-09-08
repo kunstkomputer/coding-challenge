@@ -5,7 +5,7 @@ import operator
 from decimal import *
 from itertools import groupby
 
-product_list = []
+article_list = []
 
 
 class Article:
@@ -38,9 +38,9 @@ def read_articles_from_csv(csv_file_path):
     return article_instances
 
 
-def remove_products_with_stock_zero(products):
-    if all(isinstance(x, Article) for x in products):
-        return list(filter(lambda x: x.stock_count > 0, products))
+def remove_articles_with_stock_zero(articles):
+    if all(isinstance(x, Article) for x in articles):
+        return list(i for i in articles if i.stock_count > 0)
 
 
 def get_accumulated_stock_on_cheapest(products):
@@ -61,5 +61,11 @@ def get_accumulated_stock_on_cheapest(products):
     return result
 
 
+def write_product_list_to_csv():
+    pass
+
+
 if __name__ == '__main__':
-    product_list.extend(read_articles_from_csv('../tests/data/a.csv'))
+    article_list.extend(read_articles_from_csv('../tests/data/a.csv'))
+    remove_articles_with_stock_zero(article_list)
+    get_accumulated_stock_on_cheapest(article_list)
