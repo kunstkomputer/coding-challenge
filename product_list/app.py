@@ -3,6 +3,8 @@
 import csv
 from decimal import *
 
+product_list = []
+
 
 class Article:
     def __init__(self, article_id: str, prod_id: str, name: str, description: str, price: str,
@@ -34,5 +36,11 @@ def read_articles_from_csv(csv_file_path):
     return article_instances
 
 
+def remove_products_with_stock_zero(products):
+    if all(isinstance(x, Article) for x in products):
+        return list(filter(lambda x: x.amount > 0, products))
+
+
+
 if __name__ == '__main__':
-    read_articles_from_csv('../tests/data/a.csv')
+    product_list.extend(read_articles_from_csv('../tests/data/a.csv'))

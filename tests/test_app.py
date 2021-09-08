@@ -41,3 +41,13 @@ def test_read_articles_from_csv(mock_csv_file):
 
     ]
     assert app.read_articles_from_csv(mock_csv_file) == mock_instances
+
+
+def test_products_with_stock_zero_are_filtered():
+    zero_stock_art_one = app.Article("empty", "P-1", "empty", "empty", "38", "0")
+    zero_stock_art_two = app.Article("empty", "P-2", "empty", "empty", "38", "0")
+    product_list = [zero_stock_art_one, zero_stock_art_two]
+
+    filtered_list = app.remove_products_with_stock_zero(product_list)
+
+    assert len(filtered_list) == 0
