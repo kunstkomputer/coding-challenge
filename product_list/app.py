@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import csv
+import operator
 from decimal import *
+from itertools import groupby
 
 product_list = []
 
@@ -40,6 +42,23 @@ def remove_products_with_stock_zero(products):
     if all(isinstance(x, Article) for x in products):
         return list(filter(lambda x: x.amount > 0, products))
 
+
+def get_accumulated_stock_on_cheapest(products):
+    result = []
+    print(products)
+    product_groups = []
+    for key, group in groupby(products, key=operator.attrgetter('prod_id')):
+        product_groups.append(list(group))
+
+    for article in product_groups:
+        cheapest_article = min(article, key=operator.attrgetter('price'))
+        amount_accumulated = sum(i.amount for i in article)
+        print(cheapest_article.name)
+        print(f"ammount accumulated:{amount_accumulated}")
+        cheapest_article.amount = amount_accumulated
+        result.append(cheapest_article)
+    print(f"Group_content:{list(product_groups)}")
+    return result
 
 
 if __name__ == '__main__':

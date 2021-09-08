@@ -51,3 +51,20 @@ def test_products_with_stock_zero_are_filtered():
     filtered_list = app.remove_products_with_stock_zero(product_list)
 
     assert len(filtered_list) == 0
+
+
+def test_accumulate_products():
+    sample_one = app.Article("empty", "P-1", "sample_one", "empty", "32", "2")
+    sample_two = app.Article("empty", "P-1", "sample_two", "empty", "38", "4")
+    sample_three = app.Article("empty", "P-2", "sample_three", "empty", "3", "1")
+    sample_four = app.Article("empty", "P-2", "sample_four", "empty", "2", "1")
+
+    product_list = [sample_one, sample_two, sample_three, sample_four]
+
+    accumulated_products = app.get_accumulated_stock_on_cheapest(product_list)
+
+    assert accumulated_products[0].amount == 6
+    assert accumulated_products[1].amount == 2
+
+def test_picks_first_article_in_case_of_price_tie():
+    pass
