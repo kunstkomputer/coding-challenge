@@ -22,7 +22,7 @@ class Article:
         self.prod_id = str(prod_id)
         self.name = str(name)
         self.description = str(description)
-        self.price = Decimal(str(price))
+        self.price = Decimal(str(price)).quantize(Decimal(10) ** -2)
         self.stock_count = int(amount)
 
     def __eq__(self, other):
