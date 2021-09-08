@@ -16,7 +16,7 @@ class Article:
         self.name = str(name)
         self.description = str(description)
         self.price = Decimal(str(price))
-        self.amount = int(amount)
+        self.stock_count = int(amount)
 
     def __eq__(self, other):
         if not isinstance(self, other.__class__):
@@ -24,7 +24,7 @@ class Article:
 
         return self.article_id == other.article_id and self.prod_id == other.prod_id and \
             self.name == other.name and self.description == other.description and \
-            self.price == other.price and self.amount == other.amount
+            self.price == other.price and self.stock_count == other.stock_count
 
 
 def read_articles_from_csv(csv_file_path):
@@ -40,7 +40,7 @@ def read_articles_from_csv(csv_file_path):
 
 def remove_products_with_stock_zero(products):
     if all(isinstance(x, Article) for x in products):
-        return list(filter(lambda x: x.amount > 0, products))
+        return list(filter(lambda x: x.stock_count > 0, products))
 
 
 def get_accumulated_stock_on_cheapest(products):
@@ -52,10 +52,10 @@ def get_accumulated_stock_on_cheapest(products):
 
     for article in product_groups:
         cheapest_article = min(article, key=operator.attrgetter('price'))
-        amount_accumulated = sum(i.amount for i in article)
+        amount_accumulated = sum(i.stock_count for i in article)
         print(cheapest_article.name)
         print(f"ammount accumulated:{amount_accumulated}")
-        cheapest_article.amount = amount_accumulated
+        cheapest_article.stock_count = amount_accumulated
         result.append(cheapest_article)
     print(f"Group_content:{list(product_groups)}")
     return result

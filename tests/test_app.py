@@ -63,8 +63,8 @@ def test_accumulate_products():
 
     accumulated_products = app.get_accumulated_stock_on_cheapest(product_list)
 
-    assert accumulated_products[0].amount == 6
-    assert accumulated_products[1].amount == 2
+    assert accumulated_products[0].stock_count == 6
+    assert accumulated_products[1].stock_count == 2
 
 def test_picks_first_article_in_case_of_price_tie():
     pass
