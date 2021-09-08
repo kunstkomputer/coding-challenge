@@ -37,6 +37,15 @@ class Article:
             self.price == other.price and self.stock_count == other.stock_count
 
 
+def download_articles_csv_webserver(fh, num_of_products):
+    url = "http://localhost:8080/articles/"
+    r = requests.get(url + str(num_of_products), stream=True)
+    if r.status_code == 200:
+        with open(fh, 'wb') as f:
+            r.raw.decode_content = True
+            shutil.copyfileobj(r.raw, f)
+
+
 def read_articles_from_csv(csv_file_path):
     data = list(csv.reader(open(csv_file_path), delimiter='|', lineterminator='\n'))
     print(data)
@@ -71,11 +80,38 @@ def get_accumulated_stock_on_cheapest(products):
     return result
 
 
-def write_product_list_to_csv():
+def write_product_list_to_csv(product_list, num):
+    try:
+        with os.fdopen(temp_file_upload, 'w') as tmp:
+            csv_writer = csv.writer(tmp, delimiter='|', lineterminator='\n')
+            csv_writer.writerow(['produktId', 'name', 'beschreibung', 'preis', 'summeBestand'])
+            for article in product_list:
+                csv_writer.writerow(
+                    [article.prod_id, article.name, article.description, article.price,
+                     article.stock_count])
+            upload_file_to_webserver(temp_file_upload, num)
+    finally:
+        pass
+        # os.remove(path_upload)
+
+
+def upload_file_to_webserver(fh, num_of_products):
+    headers = {'Content-type': 'text/csv'}
+
+    url = "http://localhost:8080/products/"
+    r = requests.put(url + str(num_of_products), data=open(fh, 'rb'), headers=headers)
+    print(r)
     pass
 
 
 if __name__ == '__main__':
-    article_list.extend(read_articles_from_csv('../tests/data/a.csv'))
+    articles_to_fetch = 12
+    download_articles_csv_webserver(temp_file_download, articles_to_fetch)
+
+    article_list.extend(read_articles_from_csv(path_download))
     remove_articles_with_stock_zero(article_list)
-    get_accumulated_stock_on_cheapest(article_list)
+    product_list.extend(get_accumulated_stock_on_cheapest(article_list))
+
+    write_product_list_to_csv(product_list, articles_to_fetch)
+
+    # os.remove(path_download)
