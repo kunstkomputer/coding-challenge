@@ -14,9 +14,6 @@ product_list = []
 temp_file_upload, path_upload = tempfile.mkstemp()
 temp_file_download, path_download = tempfile.mkstemp()
 
-print(path_download)
-print(path_upload)
-
 
 class Article:
     def __init__(self, article_id: str, prod_id: str, name: str, description: str, price: str,
@@ -80,38 +77,43 @@ def get_accumulated_stock_on_cheapest(products):
     return result
 
 
-def write_product_list_to_csv(product_list, num):
+def write_product_list_to_csv(products):
     try:
         with os.fdopen(temp_file_upload, 'w') as tmp:
             csv_writer = csv.writer(tmp, delimiter='|', lineterminator='\n')
             csv_writer.writerow(['produktId', 'name', 'beschreibung', 'preis', 'summeBestand'])
-            for article in product_list:
+            for article in products:
                 csv_writer.writerow(
                     [article.prod_id, article.name, article.description, article.price,
                      article.stock_count])
-            upload_file_to_webserver(temp_file_upload, num)
     finally:
         pass
         # os.remove(path_upload)
 
 
 def upload_file_to_webserver(fh, num_of_products):
-    headers = {'Content-type': 'text/csv'}
+    headers = {'Content-Type': 'text/csv'}
 
-    url = "http://localhost:8080/products/"
-    r = requests.put(url + str(num_of_products), data=open(fh, 'rb'), headers=headers)
+    url = "http://localhost:8080/products/" + str(num_of_products)
+    data = open(fh, 'rb').read()
+
+    r = requests.put(url, data=data, headers=headers)
     print(r)
-    pass
+    print(r.text)
 
+
+pass
 
 if __name__ == '__main__':
     articles_to_fetch = 12
     download_articles_csv_webserver(temp_file_download, articles_to_fetch)
 
     article_list.extend(read_articles_from_csv(path_download))
-    remove_articles_with_stock_zero(article_list)
-    product_list.extend(get_accumulated_stock_on_cheapest(article_list))
+    cleared_list = remove_articles_with_stock_zero(article_list)
+    product_list.extend(get_accumulated_stock_on_cheapest(cleared_list))
 
-    write_product_list_to_csv(product_list, articles_to_fetch)
+    write_product_list_to_csv(product_list)
+    upload_file_to_webserver(path_upload, articles_to_fetch)
 
-    # os.remove(path_download)
+    os.remove(path_download)
+    os.remove(path_upload)
