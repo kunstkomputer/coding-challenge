@@ -2,10 +2,20 @@
 # -*- coding: UTF-8 -*-
 import csv
 import operator
+import os
+import shutil
+import tempfile
+import requests
 from decimal import *
 from itertools import groupby
 
 article_list = []
+product_list = []
+temp_file_upload, path_upload = tempfile.mkstemp()
+temp_file_download, path_download = tempfile.mkstemp()
+
+print(path_download)
+print(path_upload)
 
 
 class Article:
