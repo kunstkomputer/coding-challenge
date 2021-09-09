@@ -105,9 +105,6 @@ def upload_file_to_webserver(fh, url, num_of_products):
 
 
 if __name__ == '__main__':
-    DEBUG = False
-    logging.basicConfig(level=logging.INFO)
-
     parser = argparse.ArgumentParser(
         description='Fetches a list of articles from a remote server, process them according to '
                     'spec and uploads a list of products as csv back to remote.'
@@ -135,15 +132,24 @@ if __name__ == '__main__':
                         type=int,
                         nargs='?',
                         default=100,
-                        help='the number of articles to fetch from remote '
-                             'http://localhost:8080')
+                        help='the number of articles to fetch from remote ')
+
+    parser.add_argument('--debug',
+                        action='store_true',
+                        help='activate debug mode and don\'t remove tmp files')
     args = parser.parse_args()
 
     # parse args
     url_download = args.download_url
     url_upload = args.upload_url
     lines_to_fetch = args.num_lines
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+        logging.debug('Debug mode enabled. Tempfiles not automatically removed.')
+    else:
+        logging.basicConfig(level=logging.INFO)
 
+    # setup
     articles = []
     products = []
     tmp_file_download, path_download = tempfile.mkstemp()
@@ -164,6 +170,6 @@ if __name__ == '__main__':
 
         upload_file_to_webserver(path_upload, url_upload, lines_to_fetch)
     finally:
-        if not DEBUG:
+        if not args.debug:
             os.remove(path_download)
             os.remove(path_upload)
