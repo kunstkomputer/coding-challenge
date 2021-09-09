@@ -111,7 +111,7 @@ if __name__ == '__main__':
                     'The cheapest articles per product with non zero stock is returned. All '
                     'corresponding products\' article stock count are summed and returned.')
 
-    parser.add_argument('download_url',
+    parser.add_argument('--download_url',
                         metavar='dl_url',
                         type=str,
                         nargs='?',
@@ -119,7 +119,7 @@ if __name__ == '__main__':
                         help='the Url to the server holding the article list. e.g. '
                              'http://localhost:8080')
 
-    parser.add_argument('upload_url',
+    parser.add_argument('--upload_url',
                         metavar='upl_url',
                         type=str,
                         nargs='?',
@@ -127,7 +127,7 @@ if __name__ == '__main__':
                         help='the Url to the server to upload the processed products list. '
                              'http://localhost:8080')
 
-    parser.add_argument('num_lines',
+    parser.add_argument('--lines',
                         metavar='lines',
                         type=int,
                         nargs='?',
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     # parse args
     url_download = args.download_url
     url_upload = args.upload_url
-    lines_to_fetch = args.num_lines
+    lines_to_fetch = args.lines
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Debug mode enabled. Tempfiles not automatically removed.')
