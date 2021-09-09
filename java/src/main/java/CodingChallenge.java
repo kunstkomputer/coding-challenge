@@ -8,12 +8,17 @@ public class CodingChallenge {
 
 
         try {
-            Integer numArticlesToFetch = 50;
-            URI serverUrl = buildServerUrl(new URL("http://localhost:8080?a=??"), "articles", numArticlesToFetch);
-            ProductsHttpClient.httpArticlesGetRequest(serverUrl);
+            URL serverUrl = new URL("http://localhost:8080?a=??");
+            Integer numArticlesToFetch = 5;
+            URI articlesUri = buildServerUrl(serverUrl, "articles", numArticlesToFetch);
+            ProductsHttpClient.httpArticlesGetRequest(articlesUri);
+
+            URI productsUri = buildServerUrl(serverUrl, "products", 0);
+            ProductsHttpClient.httpProductsPutRequest(productsUri, "produktId|name|beschreibung|preis|summeBestand\n");
         } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public static URI buildServerUrl(URL baseUrl, String resource, Integer lines) throws URISyntaxException {
