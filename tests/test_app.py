@@ -57,7 +57,7 @@ def test_read_articles_from_csv(mock_csv_file):
                     8.35, 39),
 
     ]
-    assert app.read_articles_from_csv(mock_csv_file) == mock_instances
+    assert app.parse_articles_from_csv(mock_csv_file) == mock_instances
 
 
 def test_products_with_stock_zero_are_filtered(fixture_article_one, fixture_article_two):
@@ -76,7 +76,7 @@ def test_accumulate_products(fixture_article_one, fixture_article_two):
 
     product_list = [fixture_article_one, fixture_article_two, sample_three, sample_four]
 
-    accumulated_products = app.get_accumulated_stock_on_cheapest(product_list)
+    accumulated_products = app.get_accumulated_product_stock_on_cheapest(product_list)
 
     assert accumulated_products[0].stock_count == 2
     assert accumulated_products[1].stock_count == 5
@@ -88,6 +88,6 @@ def test_accumlate_picks_first_article_in_case_of_price_tie():
 
     product_list = [sample_one, sample_two]
 
-    accumulated_products = app.get_accumulated_stock_on_cheapest(product_list)
+    accumulated_products = app.get_accumulated_product_stock_on_cheapest(product_list)
 
     assert accumulated_products[0].name == "sample_one"

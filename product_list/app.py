@@ -9,11 +9,6 @@ import requests
 from decimal import *
 from itertools import groupby
 
-article_list = []
-product_list = []
-temp_file_upload, path_upload = tempfile.mkstemp()
-temp_file_download, path_download = tempfile.mkstemp()
-
 
 class Article:
     def __init__(self, article_id: str, prod_id: str, name: str, description: str, price: str,
@@ -34,7 +29,7 @@ class Article:
             self.price == other.price and self.stock_count == other.stock_count
 
 
-def download_articles_csv_webserver(fh, num_of_products):
+def download_articles_csv(fh, num_of_products):
     url = "http://localhost:8080/articles/"
     r = requests.get(url + str(num_of_products), stream=True)
     if r.status_code == 200:
@@ -43,7 +38,7 @@ def download_articles_csv_webserver(fh, num_of_products):
             shutil.copyfileobj(r.raw, f)
 
 
-def read_articles_from_csv(csv_file_path):
+def parse_articles_from_csv(csv_file_path):
     data = list(csv.reader(open(csv_file_path), delimiter='|', lineterminator='\n'))
     print(data)
     article_instances = []
@@ -54,16 +49,16 @@ def read_articles_from_csv(csv_file_path):
     return article_instances
 
 
-def remove_articles_with_stock_zero(articles):
-    if all(isinstance(x, Article) for x in articles):
-        return list(i for i in articles if i.stock_count > 0)
+def remove_articles_with_stock_zero(articles_list):
+    if all(isinstance(x, Article) for x in articles_list):
+        return list(i for i in articles_list if i.stock_count > 0)
 
 
-def get_accumulated_stock_on_cheapest(products):
+def get_accumulated_product_stock_on_cheapest(products_list):
     result = []
-    print(products)
+    print(products_list)
     product_groups = []
-    for key, group in groupby(products, key=operator.attrgetter('prod_id')):
+    for key, group in groupby(products_list, key=operator.attrgetter('prod_id')):
         product_groups.append(list(group))
 
     for article in product_groups:
@@ -77,12 +72,12 @@ def get_accumulated_stock_on_cheapest(products):
     return result
 
 
-def write_product_list_to_csv(products):
+def write_product_list_to_csv(products_list):
     try:
-        with os.fdopen(temp_file_upload, 'w') as tmp:
+        with os.fdopen(tmp_file_upload, 'w') as tmp:
             csv_writer = csv.writer(tmp, delimiter='|', lineterminator='\n')
             csv_writer.writerow(['produktId', 'name', 'beschreibung', 'preis', 'summeBestand'])
-            for article in products:
+            for article in products_list:
                 csv_writer.writerow(
                     [article.prod_id, article.name, article.description, article.price,
                      article.stock_count])
@@ -105,15 +100,25 @@ def upload_file_to_webserver(fh, num_of_products):
 pass
 
 if __name__ == '__main__':
-    articles_to_fetch = 12
-    download_articles_csv_webserver(temp_file_download, articles_to_fetch)
+    articles = []
+    products = []
+    tmp_file_download, path_download = tempfile.mkstemp()
+    tmp_file_upload, path_upload = tempfile.mkstemp()
 
-    article_list.extend(read_articles_from_csv(path_download))
-    cleared_list = remove_articles_with_stock_zero(article_list)
-    product_list.extend(get_accumulated_stock_on_cheapest(cleared_list))
+    lines_to_fetch = 100000
 
-    write_product_list_to_csv(product_list)
-    upload_file_to_webserver(path_upload, articles_to_fetch)
+    try:
+        download_articles_csv(tmp_file_download, lines_to_fetch)
 
-    os.remove(path_download)
-    os.remove(path_upload)
+        articles.extend(parse_articles_from_csv(path_download))
+
+        cleared_article_list = remove_articles_with_stock_zero(articles)
+
+        products.extend(get_accumulated_product_stock_on_cheapest(cleared_article_list))
+
+        write_product_list_to_csv(products)
+
+        upload_file_to_webserver(path_upload, lines_to_fetch)
+    finally:
+        os.remove(path_download)
+        os.remove(path_upload)
