@@ -1,7 +1,11 @@
+import pojo.Article;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 public class CodingChallenge {
     public static void main(String[] args) {
@@ -9,9 +13,13 @@ public class CodingChallenge {
 
         try {
             URL serverUrl = new URL("http://localhost:8080?a=??");
-            Integer numArticlesToFetch = 5;
+            Integer numArticlesToFetch = 50;
+
+            // fetch articles from webserver and stream to parser
             URI articlesUri = buildServerUrl(serverUrl, "articles", numArticlesToFetch);
-            ProductsHttpClient.httpArticlesGetRequest(articlesUri);
+            InputStream is = ProductsHttpClient.httpArticlesGetRequest(articlesUri);
+
+            List<Article> arl = CsvParser.parseCsvAsStream(is);
 
             URI productsUri = buildServerUrl(serverUrl, "products", 0);
             ProductsHttpClient.httpProductsPutRequest(productsUri, "produktId|name|beschreibung|preis|summeBestand\n");
