@@ -1,9 +1,8 @@
-import pojo.Article;
 import org.junit.Test;
+import pojo.Article;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -11,11 +10,10 @@ import static org.junit.Assert.assertEquals;
 public class CsvParserTest {
 
     @Test
-    public void parseCsv() throws IOException {
-        Path resourceDirectory = Paths.get("src", "test", "resources", "sample.csv");
-        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+    public void parseCsvAsStream() throws IOException {
+        InputStream str = getClass().getClassLoader().getResourceAsStream("sample.csv");
 
-        List<Article> artList = CsvParser.parseCsv(absolutePath);
+        List<Article> artList = CsvParser.parseCsvAsStream(str);
         Article sample = new Article("A-cVBTQHVF", "P-cVBTQHVF", "OBLAEDD", "Gfaokn Ttefoa pfrnZ",
                 58.77f, 38);
         assertEquals(sample, artList.get(0));
