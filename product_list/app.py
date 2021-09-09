@@ -5,9 +5,10 @@ import operator
 import os
 import shutil
 import tempfile
-import requests
 from decimal import *
 from itertools import groupby
+
+import requests
 
 
 class Article:
@@ -29,9 +30,10 @@ class Article:
             self.price == other.price and self.stock_count == other.stock_count
 
 
-def download_articles_csv(fh, num_of_products):
-    url = "http://localhost:8080/articles/"
-    r = requests.get(url + str(num_of_products), stream=True)
+def download_articles_csv(fh, url, num_of_products):
+    remote_url = url + str(num_of_products)
+
+    r = requests.get(remote_url, stream=True)
     if r.status_code == 200:
         with open(fh, 'wb') as f:
             r.raw.decode_content = True
@@ -86,18 +88,14 @@ def write_product_list_to_csv(products_list):
         # os.remove(path_upload)
 
 
-def upload_file_to_webserver(fh, num_of_products):
+def upload_file_to_webserver(fh, url, num_of_products):
+    remote_url = url + str(num_of_products)
+
+    data = open(fh, 'rb').read()
     headers = {'Content-Type': 'text/csv'}
 
-    url = "http://localhost:8080/products/" + str(num_of_products)
-    data = open(fh, 'rb').read()
+    r = requests.put(remote_url, data=data, headers=headers)
 
-    r = requests.put(url, data=data, headers=headers)
-    print(r)
-    print(r.text)
-
-
-pass
 
 if __name__ == '__main__':
     articles = []
@@ -105,10 +103,13 @@ if __name__ == '__main__':
     tmp_file_download, path_download = tempfile.mkstemp()
     tmp_file_upload, path_upload = tempfile.mkstemp()
 
-    lines_to_fetch = 100000
+    url_download = "http://localhost:8080/articles/"
+    url_upload = "http://localhost:8080/products/"
+
+    lines_to_fetch = 100
 
     try:
-        download_articles_csv(tmp_file_download, lines_to_fetch)
+        download_articles_csv(tmp_file_download, url_download, lines_to_fetch)
 
         articles.extend(parse_articles_from_csv(path_download))
 
@@ -118,7 +119,7 @@ if __name__ == '__main__':
 
         write_product_list_to_csv(products)
 
-        upload_file_to_webserver(path_upload, lines_to_fetch)
+        upload_file_to_webserver(path_upload, url_upload, lines_to_fetch)
     finally:
         os.remove(path_download)
         os.remove(path_upload)
