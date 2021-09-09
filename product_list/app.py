@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import csv
+import logging
 import operator
 import os
 import shutil
@@ -32,17 +33,22 @@ class Article:
 
 def download_articles_csv(fh, url, num_of_products):
     remote_url = url + str(num_of_products)
+    logging.info(f'Fetching csv from: {remote_url}')
+    logging.debug(f'Tempfile download: {fh}')
 
     r = requests.get(remote_url, stream=True)
     if r.status_code == 200:
         with open(fh, 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
+    else:
+        logging.error(f'Unable to fetch csv from remote. Response from Server: {r.text}')
 
 
 def parse_articles_from_csv(csv_file_path):
     data = list(csv.reader(open(csv_file_path), delimiter='|', lineterminator='\n'))
-    print(data)
+    logging.debug(f'Data read from csv: {data}')
+
     article_instances = []
     for row in data[1:]:
         article_instances.append(
@@ -58,7 +64,6 @@ def remove_articles_with_stock_zero(articles_list):
 
 def get_accumulated_product_stock_on_cheapest(products_list):
     result = []
-    print(products_list)
     product_groups = []
     for key, group in groupby(products_list, key=operator.attrgetter('prod_id')):
         product_groups.append(list(group))
@@ -66,38 +71,42 @@ def get_accumulated_product_stock_on_cheapest(products_list):
     for article in product_groups:
         cheapest_article = min(article, key=operator.attrgetter('price'))
         amount_accumulated = sum(i.stock_count for i in article)
-        print(cheapest_article.name)
-        print(f"ammount accumulated:{amount_accumulated}")
+
+        logging.debug(
+            f'product: {cheapest_article.prod_id} cheapest article: {cheapest_article.name} '
+            f'amount_accumulated:{amount_accumulated}')
+
         cheapest_article.stock_count = amount_accumulated
         result.append(cheapest_article)
-    print(f"Group_content:{list(product_groups)}")
     return result
 
 
 def write_product_list_to_csv(products_list):
-    try:
-        with os.fdopen(tmp_file_upload, 'w') as tmp:
-            csv_writer = csv.writer(tmp, delimiter='|', lineterminator='\n')
-            csv_writer.writerow(['produktId', 'name', 'beschreibung', 'preis', 'summeBestand'])
-            for article in products_list:
-                csv_writer.writerow(
-                    [article.prod_id, article.name, article.description, article.price,
-                     article.stock_count])
-    finally:
-        pass
-        # os.remove(path_upload)
+    with os.fdopen(tmp_file_upload, 'w') as tmp:
+        csv_writer = csv.writer(tmp, delimiter='|', lineterminator='\n')
+        csv_writer.writerow(['produktId', 'name', 'beschreibung', 'preis', 'summeBestand'])
+        for article in products_list:
+            csv_writer.writerow(
+                [article.prod_id, article.name, article.description, article.price,
+                 article.stock_count])
 
 
 def upload_file_to_webserver(fh, url, num_of_products):
     remote_url = url + str(num_of_products)
+    logging.info(f'Uploading csv to: {remote_url}')
+    logging.debug(f'Tempfile Upload: {fh}')
 
     data = open(fh, 'rb').read()
     headers = {'Content-Type': 'text/csv'}
 
     r = requests.put(remote_url, data=data, headers=headers)
+    logging.info(f'Remote responded: HTTP status: {r.status_code} and message: {r.text}')
 
 
 if __name__ == '__main__':
+    DEBUG = False
+    logging.basicConfig(level=logging.INFO)
+
     articles = []
     products = []
     tmp_file_download, path_download = tempfile.mkstemp()
@@ -109,6 +118,8 @@ if __name__ == '__main__':
     lines_to_fetch = 100
 
     try:
+        logging.info(f'Fetching {lines_to_fetch} articles')
+
         download_articles_csv(tmp_file_download, url_download, lines_to_fetch)
 
         articles.extend(parse_articles_from_csv(path_download))
@@ -121,5 +132,6 @@ if __name__ == '__main__':
 
         upload_file_to_webserver(path_upload, url_upload, lines_to_fetch)
     finally:
-        os.remove(path_download)
-        os.remove(path_upload)
+        if not DEBUG:
+            os.remove(path_download)
+            os.remove(path_upload)
