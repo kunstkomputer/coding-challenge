@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+import argparse
 import csv
 import logging
 import operator
@@ -32,7 +33,7 @@ class Article:
 
 
 def download_articles_csv(fh, url, num_of_products):
-    remote_url = url + str(num_of_products)
+    remote_url = url + '/articles/' + str(num_of_products)
     logging.info(f'Fetching csv from: {remote_url}')
     logging.debug(f'Tempfile download: {fh}')
 
@@ -92,7 +93,7 @@ def write_product_list_to_csv(products_list):
 
 
 def upload_file_to_webserver(fh, url, num_of_products):
-    remote_url = url + str(num_of_products)
+    remote_url = url + '/products/' + str(num_of_products)
     logging.info(f'Uploading csv to: {remote_url}')
     logging.debug(f'Tempfile Upload: {fh}')
 
@@ -107,15 +108,46 @@ if __name__ == '__main__':
     DEBUG = False
     logging.basicConfig(level=logging.INFO)
 
+    parser = argparse.ArgumentParser(
+        description='Fetches a list of articles from a remote server, process them according to '
+                    'spec and uploads a list of products as csv back to remote.'
+                    'The cheapest articles per product with non zero stock is returned. All '
+                    'corresponding products\' article stock count are summed and returned.')
+
+    parser.add_argument('download_url',
+                        metavar='dl_url',
+                        type=str,
+                        nargs='?',
+                        default='http://localhost:8080',
+                        help='the Url to the server holding the article list. e.g. '
+                             'http://localhost:8080')
+
+    parser.add_argument('upload_url',
+                        metavar='upl_url',
+                        type=str,
+                        nargs='?',
+                        default='http://localhost:8080',
+                        help='the Url to the server to upload the processed products list. '
+                             'http://localhost:8080')
+
+    parser.add_argument('num_lines',
+                        metavar='lines',
+                        type=int,
+                        nargs='?',
+                        default=100,
+                        help='the number of articles to fetch from remote '
+                             'http://localhost:8080')
+    args = parser.parse_args()
+
+    # parse args
+    url_download = args.download_url
+    url_upload = args.upload_url
+    lines_to_fetch = args.num_lines
+
     articles = []
     products = []
     tmp_file_download, path_download = tempfile.mkstemp()
     tmp_file_upload, path_upload = tempfile.mkstemp()
-
-    url_download = "http://localhost:8080/articles/"
-    url_upload = "http://localhost:8080/products/"
-
-    lines_to_fetch = 100
 
     try:
         logging.info(f'Fetching {lines_to_fetch} articles')
