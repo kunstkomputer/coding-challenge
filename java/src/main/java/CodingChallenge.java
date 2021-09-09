@@ -1,10 +1,12 @@
 import pojo.Article;
+import pojo.Product;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CodingChallenge {
@@ -37,6 +39,18 @@ public class CodingChallenge {
 
         String newPath = baseUrlString + '/' + resource + '/' + lines;
         return uri.resolve(newPath);
+    }
+
+    public static List<Product> condenseArticleListToProductList(List<Article> articleList) {
+        ArrayList<Product> productArrayList = new ArrayList<>();
+        for (Article art : articleList) {
+            if ( art.stockCount > 0 ){
+                Product prd = new Product(art.productId,art.name,art.description,art.price,art.stockCount);
+                productArrayList.add(prd);
+            }
+
+        }
+        return productArrayList;
     }
 }
 
