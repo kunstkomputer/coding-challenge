@@ -11,7 +11,7 @@ public class CsvParserTest {
 
     @Test
     public void parseCsvAsStream() throws IOException {
-        InputStream str = getClass().getClassLoader().getResourceAsStream("sample.csv");
+        InputStream str = getClass().getClassLoader().getResourceAsStream("sampleArticleList.csv");
 
         List<Article> artList = CsvParser.parseCsvAsStream(str);
         Article sample = new Article("A-cVBTQHVF", "P-cVBTQHVF", "OBLAEDD", "Gfaokn Ttefoa pfrnZ",

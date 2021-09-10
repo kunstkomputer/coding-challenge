@@ -1,23 +1,34 @@
 package pojo;
 
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Product {
+public class Product implements Serializable {
 
     @CsvBindByName(column = "produktId")
+    @CsvBindByPosition(position=0)
     public String productId;
-    @CsvBindByName
+
+    @CsvBindByName(column = "name")
+    @CsvBindByPosition(position=1)
     public String name;
+
     @CsvBindByName(column = "beschreibung")
+    @CsvBindByPosition(position=2)
     public String description;
+
     @CsvBindByName(column = "preis")
+    @CsvBindByPosition(position=3)
     public Float price;
+
     @CsvBindByName(column = "summeBestand")
+    @CsvBindByPosition(position=4)
     public Integer sumStockCount;
 
-    public Integer sortKey;
+    private Integer sortKey;
 
     public Product(String productId, String name, String description, Float price, Integer sumStockCount) {
         this.productId = productId;
@@ -103,4 +114,5 @@ public class Product {
     public int hashCode() {
         return Objects.hash(productId, name, description, price, sumStockCount);
     }
+
 }
