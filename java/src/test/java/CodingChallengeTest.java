@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CodingChallengeTest {
 
@@ -39,7 +39,7 @@ public class CodingChallengeTest {
         artList.add(sample);
         artList.add(sample_two);
 
-        Product dut = new Product("P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ", 58.77f, 38);
+        Product dut = new Product("P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ", 58.77f, 38, 0);
         List<Product> pdl = CodingChallenge.condenseArticleListToProductList(artList);
 
         assertEquals(dut, pdl.get(0));
@@ -57,7 +57,7 @@ public class CodingChallengeTest {
         artList.add(sample);
         artList.add(cheap_article);
 
-        Product dut = new Product("P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ", 0.01f, 39);
+        Product dut = new Product("P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ", 0.01f, 39, 1);
         List<Product> pdl = CodingChallenge.condenseArticleListToProductList(artList);
 
         assertEquals(dut, pdl.get(0));
@@ -77,7 +77,7 @@ public class CodingChallengeTest {
 
         List<Product> pdl = CodingChallenge.condenseArticleListToProductList(artList);
 
-        Product dut = new Product("P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ", 0.01f, 39);
+        Product dut = new Product("P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ", 0.01f, 39, 1);
 
         assertEquals(dut, pdl.get(0));
         assertEquals(Integer.valueOf(39), pdl.get(0).getSumStockCount());

@@ -5,6 +5,9 @@ import com.opencsv.bean.CsvBindByName;
 import java.util.Objects;
 
 public class Article {
+    int sortKey = 0;
+    static int sortKeyCounter = 0;
+
     public Article(String id, String productId, String name, String description, float price, Integer stockCount) {
         this.id = id;
         this.productId = productId;
@@ -12,9 +15,13 @@ public class Article {
         this.description = description;
         this.price = price;
         this.stockCount = stockCount;
+        sortKey = sortKeyCounter;
+        sortKeyCounter++;
     }
 
     public Article() {
+        sortKey = sortKeyCounter;
+        sortKeyCounter++;
     }
 
     @CsvBindByName
@@ -71,12 +78,20 @@ public class Article {
         this.price = price;
     }
 
+    public int getSortKey() {
+        return sortKey;
+    }
+
     public Integer getStockCount() {
         return stockCount;
     }
 
     public void setStockCount(Integer stockCount) {
         this.stockCount = stockCount;
+    }
+
+    public boolean isInStock() {
+        return this.stockCount > 0;
     }
 
     @Override

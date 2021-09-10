@@ -17,11 +17,14 @@ public class Product {
     @CsvBindByName(column = "summeBestand")
     public Integer sumStockCount;
 
-    public Product(String productId, String name, String description, Float price, Integer sumStockCount) {
+    public Integer sortKey;
+
+    public Product(String productId, String name, String description, Float price, Integer sumStockCount, Integer sortKey) {
         this.productId = productId;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.sortKey = sortKey;
         this.sumStockCount = sumStockCount;
     }
 
@@ -58,6 +61,10 @@ public class Product {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public Integer getSortKey() {
+        return sortKey;
     }
 
     public Integer getSumStockCount() {

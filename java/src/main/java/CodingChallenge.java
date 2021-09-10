@@ -7,8 +7,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class CodingChallenge {
     public static void main(String[] args) {
@@ -25,8 +29,7 @@ public class CodingChallenge {
             List<Article> arl = CsvParser.parseCsvAsStream(is);
 
             List<Product> prl = condenseArticleListToProductList(arl);
-            for (Product p: prl
-                 ) {
+            for (Product p : prl) {
                 System.out.println("Id:" + p.productId + " Name: " + p.name + " Count:" + p.sumStockCount);
 
             }
@@ -49,25 +52,29 @@ public class CodingChallenge {
     }
 
     public static List<Product> condenseArticleListToProductList(List<Article> articleList) {
-        HashMap<String, Product> map = new HashMap<>();
-        for (Article art : articleList) {
-            if ( art.stockCount > 0 ){
-                Product prd = new Product(art.productId,art.name,art.description,art.price,art.stockCount);
-                if (map.containsKey(prd.productId)){
-                    if (prd.price < map.get(prd.productId).price){
-                        Integer oldStockCount = map.get(prd.productId).sumStockCount;
-                        map.replace(prd.productId, prd);
-                        prd.sumStockCount += oldStockCount;
-                    }else{
-                        map.get(prd.productId).sumStockCount += prd.sumStockCount;
-                    }
-                }else{
-                    map.put(prd.productId, prd);
-                }
-            }
+        List<Product> productList = new ArrayList<>();
+        List<Article> articlesInStock = articleList
+                .stream()
+                .filter(Article::isInStock)
+                .collect(Collectors.toList());
 
+
+        Map<String, List<Article>> mppy = articlesInStock.stream()
+                .collect(groupingBy(Article::getProductId));
+
+        for (List<Article> productGroup : mppy.values()) {
+            Integer sumStockCount = productGroup.stream().mapToInt(Article::getStockCount).sum();
+            Article cheapestArticle = productGroup.stream().min((first, second) -> Float.compare(first.getPrice(), second.getPrice())).get();
+
+            productList.add(new Product(cheapestArticle.productId,
+                    cheapestArticle.name,
+                    cheapestArticle.description,
+                    cheapestArticle.price,
+                    sumStockCount,
+                    cheapestArticle.getSortKey()));
         }
-        return new ArrayList<Product>(map.values());
+        productList.sort(Comparator.comparing(Product::getSortKey));
+        return productList;
     }
 }
 
