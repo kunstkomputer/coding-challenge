@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CodingChallenge {
@@ -23,6 +24,12 @@ public class CodingChallenge {
 
             List<Article> arl = CsvParser.parseCsvAsStream(is);
 
+            List<Product> prl = condenseArticleListToProductList(arl);
+            for (Product p: prl
+                 ) {
+                System.out.println("Id:" + p.productId + " Name: " + p.name + " Count:" + p.sumStockCount);
+
+            }
             URI productsUri = buildServerUrl(serverUrl, "products", 0);
             ProductsHttpClient.httpProductsPutRequest(productsUri, "produktId|name|beschreibung|preis|summeBestand\n");
         } catch (URISyntaxException | IOException | InterruptedException e) {
@@ -42,15 +49,25 @@ public class CodingChallenge {
     }
 
     public static List<Product> condenseArticleListToProductList(List<Article> articleList) {
-        ArrayList<Product> productArrayList = new ArrayList<>();
+        HashMap<String, Product> map = new HashMap<>();
         for (Article art : articleList) {
             if ( art.stockCount > 0 ){
                 Product prd = new Product(art.productId,art.name,art.description,art.price,art.stockCount);
-                productArrayList.add(prd);
+                if (map.containsKey(prd.productId)){
+                    if (prd.price < map.get(prd.productId).price){
+                        Integer oldStockCount = map.get(prd.productId).sumStockCount;
+                        map.replace(prd.productId, prd);
+                        prd.sumStockCount += oldStockCount;
+                    }else{
+                        map.get(prd.productId).sumStockCount += prd.sumStockCount;
+                    }
+                }else{
+                    map.put(prd.productId, prd);
+                }
             }
 
         }
-        return productArrayList;
+        return new ArrayList<Product>(map.values());
     }
 }
 

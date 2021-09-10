@@ -45,4 +45,21 @@ public class CodingChallengeTest {
         assertEquals(dut, pdl.get(0));
         assertEquals(1, pdl.size());
     }
+    @Test
+    public void cheapestArticleWithStockGreaterZeroIsAddedToProductsList() {
+        Article sample = new Article("A-1", "P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ",
+                2.00f, 38);
+        Article cheap_article = new Article("A-2", "P-1", "OBLAEDD", "Gfaokn Ttefoa pfrnZ",
+                0.01f, 1);
+
+        ArrayList<Article> artList = new ArrayList<>();
+        artList.add(sample);
+        artList.add(cheap_article);
+
+        Product dut = new Product("P-1","OBLAEDD", "Gfaokn Ttefoa pfrnZ", 0.01f, 39);
+        List<Product> pdl = CodingChallenge.condenseArticleListToProductList(artList);
+
+        assertEquals(dut, pdl.get(0));
+        assertEquals(1, pdl.size());
+    }
 }
