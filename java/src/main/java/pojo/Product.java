@@ -28,6 +28,46 @@ public class Product {
     public Product() {
     }
 
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public Integer getSumStockCount() {
+        return sumStockCount;
+    }
+
+    public void setSumStockCount(Integer sumStockCount) {
+        this.sumStockCount = sumStockCount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
