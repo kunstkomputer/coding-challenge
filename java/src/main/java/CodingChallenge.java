@@ -64,14 +64,12 @@ public class CodingChallenge {
 
         for (List<Article> productGroup : mppy.values()) {
             Integer sumStockCount = productGroup.stream().mapToInt(Article::getStockCount).sum();
-            Article cheapestArticle = productGroup.stream().min((first, second) -> Float.compare(first.getPrice(), second.getPrice())).get();
+            Article cheapestArticle = productGroup.stream().min(
+                    (first, second) -> Float.compare(first.getPrice(), second.getPrice())).get();
 
-            productList.add(new Product(cheapestArticle.productId,
-                    cheapestArticle.name,
-                    cheapestArticle.description,
-                    cheapestArticle.price,
-                    sumStockCount,
-                    cheapestArticle.getSortKey()));
+            Product product = new Product(cheapestArticle);
+            product.setSumStockCount(sumStockCount);
+            productList.add(product);
         }
         productList.sort(Comparator.comparing(Product::getSortKey));
         return productList;

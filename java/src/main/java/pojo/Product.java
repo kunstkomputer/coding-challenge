@@ -19,13 +19,21 @@ public class Product {
 
     public Integer sortKey;
 
-    public Product(String productId, String name, String description, Float price, Integer sumStockCount, Integer sortKey) {
+    public Product(String productId, String name, String description, Float price, Integer sumStockCount) {
         this.productId = productId;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.sortKey = sortKey;
         this.sumStockCount = sumStockCount;
+    }
+
+    public Product(Article article){
+        this.productId = article.productId;
+        this.name = article.name;
+        this.description = article.description;
+        this.price = article.price;
+        this.sumStockCount = article.stockCount;
+        this.sortKey = article.sortKey;
     }
 
     public Product() {
@@ -65,6 +73,10 @@ public class Product {
 
     public Integer getSortKey() {
         return sortKey;
+    }
+
+    public void setSortKey(Integer sortKey) {
+        this.sortKey = sortKey;
     }
 
     public Integer getSumStockCount() {
