@@ -4,6 +4,7 @@ import annotations.CsvBindByNameOrder;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvIgnore;
+import com.opencsv.bean.CsvNumber;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,7 +22,8 @@ public class Product {
     @CsvBindByName(column = "beschreibung")
     public String description;
 
-    @CsvBindByName(column = "preis")
+    @CsvBindByName(column = "preis", locale = "en-US")
+    @CsvNumber("###0.00")
     public Float price;
 
     @CsvBindByName(column = "summeBestand")

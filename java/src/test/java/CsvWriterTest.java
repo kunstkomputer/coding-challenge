@@ -35,4 +35,24 @@ public class CsvWriterTest {
         final String generatedCsvTestFileContent = Files.readString(Path.of(tempFile.getAbsolutePath()));
         assertEquals(premadeCsvTestFileContent,generatedCsvTestFileContent);
     }
+
+    @Test
+    public void floatsAreRenderedAsTwoDigitsAfterDecimalPoint() throws IOException {
+        List<Product> prodList = new ArrayList<>();
+
+        Product bothPriceDigitsZero = new Product("P-SA6YNXRd","KCBOXLLTPM FFSQ","xs lzul n lmpPPf mjd",29.00f,27);
+        Product lastPriceDigitsZero = new Product("P-A6YNXRdD","CVKCBOX","",29.50f,27);
+
+        prodList.add(bothPriceDigitsZero);
+        prodList.add(lastPriceDigitsZero);
+
+        final File tempFile = tempFolder.newFile();
+        CsvWriter.writeProductListToCsv(tempFile.getAbsolutePath() ,prodList);
+
+        String premadeCsvTestFileContent = new String(getClass().getClassLoader().getResourceAsStream("sampleProductListWithFloatFormat.csv").readAllBytes());
+
+        final String generatedCsvTestFileContent = Files.readString(Path.of(tempFile.getAbsolutePath()));
+        assertEquals(premadeCsvTestFileContent,generatedCsvTestFileContent);
+    }
+
 }
