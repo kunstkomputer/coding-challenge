@@ -21,14 +21,14 @@ public class ProductsHttpClient {
         return response.body();
     }
 
-    public static void httpProductsPutRequest(URI uri, String csvContent) throws IOException, InterruptedException {
+    public static void httpProductsPutRequest(URI uri, byte[] csvContent) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
         HttpRequest request = HttpRequest.newBuilder(uri)
                 .version(HttpClient.Version.HTTP_1_1)
                 .header("Content-Type", "text/csv")
-                .PUT(HttpRequest.BodyPublishers.ofString(csvContent))
+                .PUT(HttpRequest.BodyPublishers.ofByteArray(csvContent))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String responseBody = response.body();

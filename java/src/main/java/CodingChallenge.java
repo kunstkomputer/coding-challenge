@@ -32,10 +32,10 @@ public class CodingChallenge {
 
             List<Product> prl = condenseArticleListToProductList(arl);
 
-            CsvWriter.writeProductListToCsv(prl);
+            byte[] csvPayload = CsvWriter.writeProductListToCsv(prl);
 
-            URI productsUri = buildServerUrl(serverUrl, "products", 0);
-            ProductsHttpClient.httpProductsPutRequest(productsUri, "produktId|name|beschreibung|preis|summeBestand\n");
+            URI productsUri = buildServerUrl(serverUrl, "products", numArticlesToFetch);
+            ProductsHttpClient.httpProductsPutRequest(productsUri, csvPayload);
         } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
         }
