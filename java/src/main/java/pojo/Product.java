@@ -2,6 +2,7 @@ package pojo;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvIgnore;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,6 +29,7 @@ public class Product implements Serializable {
     @CsvBindByPosition(position=4)
     public Integer sumStockCount;
 
+    @CsvIgnore
     private Integer sortKey;
 
     public Product(String productId, String name, String description, Float price, Integer sumStockCount) {

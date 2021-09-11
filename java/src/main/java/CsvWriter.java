@@ -22,7 +22,7 @@ public class CsvWriter {
 
             // header record
 
-            CustomMappingStrategy<Product> mappingStrategy = new CustomMappingStrategy<>();
+            CustomMappingStrategy<Product> mappingStrategy = new CustomMappingStrategy<>(Product.class);
             mappingStrategy.setType(Product.class);
 
             // create a csv writer
