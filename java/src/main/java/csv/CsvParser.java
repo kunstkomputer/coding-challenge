@@ -25,12 +25,6 @@ public class CsvParser {
                     .build();
 
             for (Article article : csvToBean) {
-                System.out.println("ID: " + article.getId());
-                System.out.println("Product ID: " + article.getProductId());
-                System.out.println("Name: " + article.getName());
-                System.out.println("Description: " + article.getDescription());
-                System.out.println("Price: " + article.getPrice());
-                System.out.println("Stock Count: " + article.getStockCount());
                 articleList.add(article);
             }
             isr.close();

@@ -1,5 +1,7 @@
 import csv.CsvParser;
 import csv.CsvWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pojo.Article;
 import pojo.Product;
 
@@ -17,15 +19,19 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
 
 public class CodingChallenge {
+    private static final Logger logger = LoggerFactory.getLogger(CodingChallenge.class);
+
     public static void main(String[] args) {
 
 
         try {
-            URL serverUrl = new URL("http://localhost:8080?a=??");
             Integer numArticlesToFetch = 50;
+            final URL serverUrl = new URL("http://localhost:8080");
 
             // fetch articles from webserver and stream to parser
             URI articlesUri = buildServerUrl(serverUrl, "articles", numArticlesToFetch);
+            logger.info("fetching " + numArticlesToFetch + "articles.");
+            logger.info("Remote Server: " + articlesUri);
             InputStream is = ProductsHttpClient.httpArticlesGetRequest(articlesUri);
 
             List<Article> arl = CsvParser.parseCsvAsStream(is);
@@ -35,6 +41,8 @@ public class CodingChallenge {
             byte[] csvPayload = CsvWriter.writeProductListToCsv(prl);
 
             URI productsUri = buildServerUrl(serverUrl, "products", numArticlesToFetch);
+            logger.info("Uploading product to remote Server: " + productsUri);
+
             ProductsHttpClient.httpProductsPutRequest(productsUri, csvPayload);
         } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
