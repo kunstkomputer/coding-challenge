@@ -1,4 +1,5 @@
 import csv.CsvParser;
+import csv.CsvWriter;
 import pojo.Article;
 import pojo.Product;
 
@@ -30,10 +31,9 @@ public class CodingChallenge {
             List<Article> arl = CsvParser.parseCsvAsStream(is);
 
             List<Product> prl = condenseArticleListToProductList(arl);
-            for (Product p : prl) {
-                System.out.println("Id:" + p.productId + " Name: " + p.name + " Count:" + p.sumStockCount);
 
-            }
+            CsvWriter.writeProductListToCsv(prl);
+
             URI productsUri = buildServerUrl(serverUrl, "products", 0);
             ProductsHttpClient.httpProductsPutRequest(productsUri, "produktId|name|beschreibung|preis|summeBestand\n");
         } catch (URISyntaxException | IOException | InterruptedException e) {

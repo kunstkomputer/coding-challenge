@@ -8,10 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CsvWriterTest {
     @Rule
@@ -28,7 +29,8 @@ public class CsvWriterTest {
 
 
         final File tempFile = tempFolder.newFile();
-        CsvWriter.writeProductListToCsv(tempFile.getAbsolutePath() ,prodList);
+        byte[] csvContent = CsvWriter.writeProductListToCsv(prodList);
+        Files.write(Paths.get(tempFile.getAbsolutePath()), csvContent);
 
         String premadeCsvTestFileContent = new String(getClass().getClassLoader().getResourceAsStream("sampleProductList.csv").readAllBytes());
 
@@ -47,7 +49,8 @@ public class CsvWriterTest {
         prodList.add(lastPriceDigitsZero);
 
         final File tempFile = tempFolder.newFile();
-        CsvWriter.writeProductListToCsv(tempFile.getAbsolutePath() ,prodList);
+        byte[] csvContent = CsvWriter.writeProductListToCsv(prodList);
+        Files.write(Paths.get(tempFile.getAbsolutePath()), csvContent);
 
         String premadeCsvTestFileContent = new String(getClass().getClassLoader().getResourceAsStream("sampleProductListWithFloatFormat.csv").readAllBytes());
 
