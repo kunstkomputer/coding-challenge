@@ -1,5 +1,6 @@
 package pojo;
 
+import annotations.CsvBindByNameOrder;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvIgnore;
@@ -7,26 +8,23 @@ import com.opencsv.bean.CsvIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Product implements Serializable {
+//annotation from
+@CsvBindByNameOrder({"produktId","name","beschreibung","preis","summeBestand"})
+public class Product {
 
     @CsvBindByName(column = "produktId")
-    @CsvBindByPosition(position=0)
     public String productId;
 
     @CsvBindByName(column = "name")
-    @CsvBindByPosition(position=1)
     public String name;
 
     @CsvBindByName(column = "beschreibung")
-    @CsvBindByPosition(position=2)
     public String description;
 
     @CsvBindByName(column = "preis")
-    @CsvBindByPosition(position=3)
     public Float price;
 
     @CsvBindByName(column = "summeBestand")
-    @CsvBindByPosition(position=4)
     public Integer sumStockCount;
 
     @CsvIgnore

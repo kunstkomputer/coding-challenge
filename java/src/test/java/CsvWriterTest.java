@@ -1,13 +1,11 @@
+import csv.CsvWriter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import pojo.Article;
 import pojo.Product;
 
-import javax.xml.xpath.XPath;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class CsvWriterTest {
         prodList.add(new Product("P-A6YNXRdD","CVKCBOX","",29.85f,27));
         prodList.add(new Product("P-SYNXRdDY","KCBOXLLTPM FFSQ","xs lzul n lmpPPf mjd",29.85f,27));
         prodList.add(new Product("P-6YNXRdDY","KCBOXLLTPM FFSQ","xs lzul n lmpPPf mjd",29.85f,134));
-        prodList.add(new Product("P-XRdDYcOL","FFSQ AOXKS","xs lzul n lmpPPf mjd",29.85f,48));
+        prodList.add(new Product("P-XRdDYcOL","FFSQ AOXKS","zulHklmpP",17.09f,48));
 
 
         final File tempFile = tempFolder.newFile();

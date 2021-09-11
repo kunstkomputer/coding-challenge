@@ -1,3 +1,5 @@
+package csv;
+
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import pojo.Article;

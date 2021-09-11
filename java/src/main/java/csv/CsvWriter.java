@@ -1,11 +1,11 @@
+package csv;
+
 import com.opencsv.CSVWriter;
-import com.opencsv.CSVWriterBuilder;
-import com.opencsv.ICSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import pojo.CustomMappingStrategy;
+import csv.HeaderColumnNameAndOrderMappingStrategy;
 import pojo.Product;
 
 import java.io.IOException;
@@ -15,34 +15,25 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class CsvWriter {
-    static void writeProductListToCsv(String path, List<Product> articleList){
+    public static void writeProductListToCsv(String path, List<Product> articleList) {
         try {
-            // create a write
             Writer writer = Files.newBufferedWriter(Paths.get(path));
 
-            // header record
+            HeaderColumnNameAndOrderMappingStrategy<Product> mappingStrategy = new HeaderColumnNameAndOrderMappingStrategy<>(Product.class);
 
-            CustomMappingStrategy<Product> mappingStrategy = new CustomMappingStrategy<>(Product.class);
-            mappingStrategy.setType(Product.class);
-
-            // create a csv writer
             StatefulBeanToCsv<Product> csvWriter = new StatefulBeanToCsvBuilder<Product>(writer)
                     .withMappingStrategy(mappingStrategy)
-                    .withQuotechar('_')
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
                     .withSeparator('|')
                     .withLineEnd("\n")
                     .withOrderedResults(true)
                     .build();
 
-            // write header record
-            //csvWriter.writeNext(headerRecord);
-
-            // write data records
             csvWriter.write(articleList);
 
             writer.close();
 
-        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException ex) {
+        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException  ex) {
             ex.printStackTrace();
         }
     }
