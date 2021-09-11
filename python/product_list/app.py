@@ -87,6 +87,8 @@ def write_product_list_to_csv(products_list):
         csv_writer = csv.writer(tmp, delimiter='|', lineterminator='\n')
         csv_writer.writerow(['produktId', 'name', 'beschreibung', 'preis', 'summeBestand'])
         for article in products_list:
+            print(f"{article.prod_id}|{article.name}|{article.description}|"
+                  f"{article.price}|{article.stock_count}")
             csv_writer.writerow(
                 [article.prod_id, article.name, article.description, article.price,
                  article.stock_count])
