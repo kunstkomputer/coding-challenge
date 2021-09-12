@@ -45,6 +45,7 @@ public class CodingChallenge {
 
             ProductsHttpClient.httpProductsPutRequest(productsUri, csvPayload);
         } catch (URISyntaxException | IOException | InterruptedException e) {
+            logger.error(String.valueOf(e));
             e.printStackTrace();
         }
 
@@ -60,6 +61,15 @@ public class CodingChallenge {
         return uri.resolve(newPath);
     }
 
+    /**
+    Takes a list of articles and performs the following aggerations an calculations.
+    Considers articles which are in stock and finds the cheapest article per product. For this product, all the remaining
+    stock counts are summed up and stored as a field in product.
+     The returned list is sorted by the order, the entries were parsed in.
+
+     @param articleList list of articles to process
+     @return processed list of products for marketing
+     */
     public static List<Product> condenseArticleListToProductList(List<Article> articleList) {
         List<Product> productList = new ArrayList<>();
         List<Article> articlesInStock = articleList
